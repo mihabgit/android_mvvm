@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">CodingTaskImran</string>
+
+    <string name="txt_no_internet_connection">No Internet Connection</string>
+    <string name="msg_no_internet_connection">You are offline, please check the internet connection</string>
+    <string name="ok">OK</string>
+</resources>
