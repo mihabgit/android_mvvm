@@ -2,7 +2,9 @@ package com.example.codingtaskimran.view.ui;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -26,6 +28,9 @@ public class ProductsActivity extends AppCompatActivity {
     private ProgressDialog progressDialog;
     private String slug;
     private int page = 1;
+
+    private boolean loading = true;
+    int pastVisiblesItems, visibleItemCount, totalItemCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,25 +57,52 @@ public class ProductsActivity extends AppCompatActivity {
         rvProduct.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         rvProduct.setAdapter(productsAdapter);
 
-        getProductList();
-    }
-
-    private void getProductList() {
         ProductListViewModel productListViewModel = ViewModelProviders.of(this,
                 new ProductViewModelFactory(this.getApplication(), slug, page)).get(ProductListViewModel.class);
-        observeProductViewModel(productListViewModel);
-    }
 
-    private void observeProductViewModel(ProductListViewModel productListViewModel) {
-        productListViewModel.getProductListObservable().observe(this, new Observer<Product>() {
+        productListViewModel.getProductList(slug, page).observe(this, new Observer<Product>() {
             @Override
-            public void onChanged(Product products) {
-                if (products != null) {
+            public void onChanged(Product product) {
+                if (product != null) {
                     progressDialog.dismiss();
-                    List<Result> productList = products.getResults();
+                    List<Result> productList = product.getResults();
                     productsAdapter.setProductList(productList);
                 } else {
                     progressDialog.dismiss();
+                }
+            }
+        });
+
+        rvProduct.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy > 0) {
+
+                    visibleItemCount = linearLayoutManager.getChildCount();
+                    totalItemCount = linearLayoutManager.getItemCount();
+                    pastVisiblesItems = linearLayoutManager.findFirstVisibleItemPosition();
+
+                    if (loading) {
+                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                            loading = false;
+                            page++;
+                            progressDialog.show();
+                            productListViewModel.getProductList(slug, page).observe(ProductsActivity.this, new Observer<Product>() {
+                                @Override
+                                public void onChanged(Product product) {
+                                    if (product != null) {
+                                        progressDialog.dismiss();
+                                        List<Result> productList = product.getResults();
+                                        productsAdapter.setProductList(productList);
+                                    } else {
+                                        progressDialog.dismiss();
+                                    }
+                                }
+                            });
+                            loading = true;
+                        }
+                    }
                 }
             }
         });
