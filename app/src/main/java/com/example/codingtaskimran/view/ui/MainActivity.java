@@ -3,6 +3,7 @@ package com.example.codingtaskimran.view.ui;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -52,13 +53,24 @@ public class MainActivity extends AppCompatActivity {
         if (isOnline()) {
             final CategoryListViewModel categoryListViewModel =
                     ViewModelProviders.of(this).get(CategoryListViewModel.class);
-            observeViewModel(categoryListViewModel);
+            observeCategoryViewModel(categoryListViewModel);
         } else {
             showNoInternetDialog();
         }
+
+        categoryAdapter.setOnCategoryItemClickListener(new CategoryAdapter.OnCategoryItemClickListener() {
+            @Override
+            public void onItemClickListener(Category category, int position) {
+                if (category != null) {
+                    Intent intent = new Intent(MainActivity.this, ProductsActivity.class);
+                    intent.putExtra("slug", category.getSlug());
+                    startActivity(intent);
+                }
+            }
+        });
     }
 
-    private void observeViewModel(CategoryListViewModel viewModel) {
+    private void observeCategoryViewModel(CategoryListViewModel viewModel) {
         viewModel.getCategoryListObservable().observe(this, new Observer<List<Category>>() {
             @Override
             public void onChanged(List<Category> categories) {

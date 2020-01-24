@@ -1,6 +1,7 @@
 package com.example.codingtaskimran.view.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.codingtaskimran.R;
 import com.example.codingtaskimran.service.model.Category;
+import com.example.codingtaskimran.view.ui.ProductsActivity;
 
 import java.util.List;
 
@@ -20,6 +22,11 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
 
     private Context context;
     private List<Category> categoryList;
+    private OnCategoryItemClickListener onCategoryItemClickListener;
+
+    public void setOnCategoryItemClickListener(OnCategoryItemClickListener onCategoryItemClickListener) {
+        this.onCategoryItemClickListener = onCategoryItemClickListener;
+    }
 
     public CategoryAdapter(Context context, List<Category> categoryList) {
         this.context = context;
@@ -39,6 +46,10 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
 
         Glide.with(context).load(category.getImageUrl()).into(holder.ivCategoryImage);
         holder.tvCategoryName.setText(category.getName());
+
+        holder.itemView.setOnClickListener(v -> {
+            onCategoryItemClickListener.onItemClickListener(category, position);
+        });
     }
 
     public void setCategoryList(List<Category> categoryList) {
@@ -62,5 +73,9 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
             ivCategoryImage = itemView.findViewById(R.id.ivCategoryImage);
             tvCategoryName = itemView.findViewById(R.id.tvCategoryName);
         }
+    }
+
+    public interface OnCategoryItemClickListener {
+        void onItemClickListener(Category category, int position);
     }
 }

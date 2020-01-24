@@ -4,8 +4,11 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.codingtaskimran.service.model.Category;
+import com.example.codingtaskimran.service.model.Product;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -42,20 +45,27 @@ public class CategoryRepository {
         });
         return data;
     }
+
+    public LiveData<Product> getProductList(String slug) {
+        final MutableLiveData<Product> data = new MutableLiveData<>();
+
+        Map<String, Object > map = new HashMap<>();
+        map.put("page", 1);
+        map.put("category", slug);
+        map.put("limit", "10");
+
+        apiInterface.getProducts(map).enqueue(new Callback<Product>() {
+            @Override
+            public void onResponse(Call<Product> call, Response<Product> response) {
+                data.setValue(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<Product> call, Throwable t) {
+                data.setValue(null);
+            }
+        });
+
+        return data;
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
