@@ -7,6 +7,8 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.example.codingtaskimran.service.model.Category;
+import com.example.codingtaskimran.service.repository.local.dbrepo.LocalCategoryRepository;
+import com.example.codingtaskimran.service.repository.local.table.CategoryTable;
 import com.example.codingtaskimran.service.repository.remote.CategoryRepository;
 
 import java.util.List;
@@ -25,20 +27,3 @@ public class CategoryListViewModel extends AndroidViewModel {
         return categoryListObservable;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

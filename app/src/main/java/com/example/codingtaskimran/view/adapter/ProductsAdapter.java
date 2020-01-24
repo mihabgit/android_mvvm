@@ -10,9 +10,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.example.codingtaskimran.R;
 import com.example.codingtaskimran.service.model.Result;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -39,7 +39,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.MyView
 
         holder.tvProductName.setText(product.getName());
         holder.tvProductPrice.setText(String.format("Price : %s TK", product.getMinDiscountedPrice()));
-        Glide.with(context).load(product.getProductImage()).into(holder.ivProductImage);
+        Picasso.get().load(product.getProductImage()).resize(80, 80).into(holder.ivProductImage);
     }
 
     public void setProductList(List<Result> productList) {
