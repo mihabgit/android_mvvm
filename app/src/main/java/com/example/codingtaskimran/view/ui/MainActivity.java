@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
         progressDialog = new ProgressDialog(MainActivity.this);
         progressDialog.setMessage("Loading....");
+        progressDialog.setCancelable(false);
         progressDialog.show();
 
         RecyclerView rvCategory = findViewById(R.id.rvCategory);

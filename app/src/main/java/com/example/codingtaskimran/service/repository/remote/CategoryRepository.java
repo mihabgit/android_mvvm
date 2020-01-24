@@ -46,13 +46,13 @@ public class CategoryRepository {
         return data;
     }
 
-    public LiveData<Product> getProductList(String slug) {
-        final MutableLiveData<Product> data = new MutableLiveData<>();
+    public LiveData<Product> getProductList(String slug, int page) {
+        MutableLiveData<Product> data = new MutableLiveData<>();
 
         Map<String, Object > map = new HashMap<>();
-        map.put("page", 1);
+        map.put("page", page);
         map.put("category", slug);
-        map.put("limit", "10");
+        map.put("limit", 10);
 
         apiInterface.getProducts(map).enqueue(new Callback<Product>() {
             @Override
